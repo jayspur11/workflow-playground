@@ -1,0 +1,23 @@
+name: "Dependency Validation"
+
+on:
+  repository_dispatch:
+    types: [dependency_validation]
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Update dependency to target commit
+        env:
+          TARGET_COMMIT: ${{ github.event.client_payload.commit }}
+        working-directory: workflow-playground-dependency
+        run: git checkout  $TARGET_COMMIT
+
+      - name: Run dependency test 
+        run: ./workflow-playground-dependency/something-to-run.sh
